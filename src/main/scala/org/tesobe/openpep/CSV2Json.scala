@@ -19,5 +19,4 @@ object CSV2Json {
       case _ => None
     }
   }
-
 }
