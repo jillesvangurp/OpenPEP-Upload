@@ -2,3 +2,7 @@
 csvPath=/home/nina/Documents/pep_data.csv
 es_index=people
 es_type=person
+sampleCsvPath=/home/nina/Documents/sample_data.csv
+sampleJsonPath=/home/nina/Documents/sample_data
+sample_es_index=sample
+sample_es_type=person

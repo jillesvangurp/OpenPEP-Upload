@@ -9,6 +9,8 @@ import org.elasticsearch.common.transport.InetSocketTransportAddress
 import org.elasticsearch.node.NodeBuilder._
 import org.json.JSONArray
 import scala.io.Source
+// import scala.util.{Try, Failure}
+// import org.json.CDL
 
 object Upload {
 
@@ -17,7 +19,7 @@ object Upload {
     val node = nodeBuilder().clusterName("myCluster").client(true).node()
     val settings = ImmutableSettings.settingsBuilder()
       .put("cluster.name", "myCluster")
-      .put("index.number_of_shards", 13)
+      .put("index.number_of_shards", 5)
       .put("index.number_of_replicas", 1)
      .build()
     val client = new TransportClient(settings)
@@ -29,10 +31,11 @@ object Upload {
     }
 
     def getJson {
-      val json = CSV2Json.convert
+      val json = CSVToJson.convert
       json match {
         case Some(converted) =>
-          createESDocuments(Props.get("es_index", "people"), Props.get("es_type", "person"), converted)
+          // createESDocuments(Props.get("es_index", "people"), Props.get("es_type", "person"), converted)
+          createESDocuments(Props.get("sample_es_index", "people"), Props.get("sample_es_type", "person"), converted)
         case None => {
           println("Converting CSV to JSON failed.")
         }
@@ -60,5 +63,7 @@ object Upload {
     }
 
     getJson
+    // val json = new JSONArray(Source.fromFile(Props.get("sampleJsonPath","/home/nina/Documents/sample_data")).mkString)
+    // createESDocuments(Props.get("sample_es_index", "people"), Props.get("sample_es_type", "person"), json)
   }
 }
