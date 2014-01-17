@@ -1,8 +1,8 @@
 # Properties in this file will be read when running in dev mode
-csvPath=/home/nina/Documents/pep_data.csv
+csvPath=/home/nina/Documents/pep-data/pep_data.csv
 es_index=people
 es_type=person
-sampleCsvPath=/home/nina/Documents/sample_data.csv
-sampleJsonPath=/home/nina/Documents/sample_data
+sampleCsvPath=/home/nina/Documents/pep-data/sample_data.csv
+sampleJsonPath=/home/nina/Documents/pep-data/sample_data
 sample_es_index=sample
 sample_es_type=person

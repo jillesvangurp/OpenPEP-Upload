@@ -7,8 +7,6 @@ import org.json.JSONArray
 import org.json.JSONException
 import scala.io.Source
 import scala.util.{Try, Failure}
-import au.com.bytecode.opencsv.CSVReader
-import java.io.StringReader
 
 object CSV2Json {
 
@@ -17,10 +15,12 @@ object CSV2Json {
     // Props.get("csvPath") match{
       case Full(path) =>{
         val csv: String = Source.fromFile(path).mkString
-        // val jsonString = Try(CDL.toJSONArray(csv))
-        val jsonString = Try(CDL.toJSONArray(csv))
-        // println("****************"+ jsonString)
-        jsonString.toOption
+        Try(new JSONArray(
+          CDL.toJSONArray(csv)
+          .toString
+          .replaceAll("(\"([0-9]+)(\\.[0-9]+)?\")+", "$2$3")
+        )).toOption
+
       }
       case _ => None
     }

@@ -31,7 +31,7 @@ object Upload {
     }
 
     def getJson {
-      val json = CSVToJson.convert
+      val json = CSV2Json.convert
       json match {
         case Some(converted) =>
           // createESDocuments(Props.get("es_index", "people"), Props.get("es_type", "person"), converted)
