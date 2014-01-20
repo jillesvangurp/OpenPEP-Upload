@@ -1,0 +1,4 @@
+# Properties in this file will be read when running in dev mode
+csvPath=PATH_TO_CSV_FILE
+es_index=INDEX_NAME_FOR ELASTICSEARCH
+es_type=TYPE_NAME_FOR ELASTICSEARCH

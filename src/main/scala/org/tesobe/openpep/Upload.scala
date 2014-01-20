@@ -1,4 +1,34 @@
-package org.tesobe.openpep
+/**
+Open PEP Search
+Copyright (C) 2013, 2013, TESOBE / Music Pictures Ltd
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU Affero General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU Affero General Public License for more details.
+
+You should have received a copy of the GNU Affero General Public License
+along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+Email: contact@tesobe.com
+TESOBE / Music Pictures Ltd
+Osloerstrasse 16/17
+Berlin 13359, Germany
+
+  This product includes software developed at
+  TESOBE (http://www.tesobe.com/)
+  by
+  Simon Redfern : simon AT tesobe DOT com
+  Nina Gänsdorfer: nina AT tesobe DOT com
+  Ayoub Benali: ayoub AT tesobe DOT com
+
+ */
+ package org.tesobe.openpep
 
 import net.liftweb.util.Props
 import org.elasticsearch.action.admin.indices.create.CreateIndexRequest
@@ -9,8 +39,6 @@ import org.elasticsearch.common.transport.InetSocketTransportAddress
 import org.elasticsearch.node.NodeBuilder._
 import org.json.JSONArray
 import scala.io.Source
-// import scala.util.{Try, Failure}
-// import org.json.CDL
 
 object Upload {
 
@@ -19,7 +47,7 @@ object Upload {
     val node = nodeBuilder().clusterName("myCluster").client(true).node()
     val settings = ImmutableSettings.settingsBuilder()
       .put("cluster.name", "myCluster")
-      .put("index.number_of_shards", 5)
+      .put("index.number_of_shards", 13)
       .put("index.number_of_replicas", 1)
      .build()
     val client = new TransportClient(settings)
@@ -34,8 +62,7 @@ object Upload {
       val json = CSV2Json.convert
       json match {
         case Some(converted) =>
-          // createESDocuments(Props.get("es_index", "people"), Props.get("es_type", "person"), converted)
-          createESDocuments(Props.get("sample_es_index", "people"), Props.get("sample_es_type", "person"), converted)
+          createESDocuments(Props.get("es_index", "people"), Props.get("es_type", "person"), converted)
         case None => {
           println("Converting CSV to JSON failed.")
         }
@@ -45,7 +72,6 @@ object Upload {
     def createESDocuments (es_index: String, es_type: String, json: JSONArray){
       createIndexWithProperties(es_index)
 
-      // val bulkJson = Source.fromFile(getJson).getLines().toList
       var bulkJson: List[String] = Nil
       for(i <- 0 to json.length-1 ){
         bulkJson = bulkJson :+ json.get(i).toString
@@ -57,13 +83,10 @@ object Upload {
         line => bulkRequest.add(client.prepareIndex(es_index, es_type, line._2.toString).setSource(line._1))
       }
 
-      // execute bulkRequest
       bulkRequest.execute().actionGet()
       client.close()
     }
 
     getJson
-    // val json = new JSONArray(Source.fromFile(Props.get("sampleJsonPath","/home/nina/Documents/sample_data")).mkString)
-    // createESDocuments(Props.get("sample_es_index", "people"), Props.get("sample_es_type", "person"), json)
   }
 }
