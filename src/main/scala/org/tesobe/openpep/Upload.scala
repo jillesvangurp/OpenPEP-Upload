@@ -47,6 +47,7 @@ object Upload {
     val node = nodeBuilder().clusterName("myCluster").client(true).node()
     val settings = ImmutableSettings.settingsBuilder()
       .put("cluster.name", "myCluster")
+      // FIXME me why so many shards?
       .put("index.number_of_shards", 13)
       .put("index.number_of_replicas", 1)
      .build()
@@ -54,6 +55,7 @@ object Upload {
     client.addTransportAddress(new InetSocketTransportAddress("localhost", 9300))
 
     def createIndexWithProperties(indexName: String) = {
+      // FIXME what about the mapping?
       val indexRequest = new CreateIndexRequest(indexName).settings(settings)
       client.admin().indices().create(indexRequest).actionGet()
     }
@@ -64,6 +66,7 @@ object Upload {
         case Some(converted) =>
           createESDocuments(Props.get("es_index", "people"), Props.get("es_type", "person"), converted)
         case None => {
+          // FIXME maybe use a logging framework ..
           println("Converting CSV to JSON failed.")
         }
       }
@@ -79,10 +82,15 @@ object Upload {
 
       val bulkRequest = client.prepareBulk()
       // in for loop we are adding  prepareindex call to bulkRequest for each json
+      
+      // FIXME you may need to constrain the size of what you indexing by doing multiple bulk index requests with smaller
+      // pages. Also, you may consider sending concurrent bulk index requests, ES scales quite well with concurrent indexing,
+      
       bulkJson.zipWithIndex.foreach{
         line => bulkRequest.add(client.prepareIndex(es_index, es_type, line._2.toString).setSource(line._1))
       }
-
+    
+      // FIXME you are ignoring response, some documents might have failed to index; logging
       bulkRequest.execute().actionGet()
       client.close()
     }
